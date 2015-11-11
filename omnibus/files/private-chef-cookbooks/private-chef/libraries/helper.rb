@@ -1,5 +1,6 @@
 require 'mixlib/shellout'
 require 'uri'
+require 'resolv'
 
 class OmnibusHelper
   attr_reader :node
@@ -27,10 +28,7 @@ class OmnibusHelper
   # Normalizes hosts. If the host part is an ipv6 literal, then it
   # needs to be quoted with []
   def self.normalize_host(host_part)
-    # Make this simple: if ':' is detected at all, it is assumed
-    # to be a valid ipv6 address. We don't do data validation at this
-    # point, and ':' is only valid in an URL if it is quoted by brackets.
-    if host_part =~ /:/
+    if host_part =~ Resolv::IPv6::Regex
       "[#{host_part}]"
     else
       host_part
